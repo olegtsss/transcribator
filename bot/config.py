@@ -45,8 +45,10 @@ class Settings(BaseSettings):
 
 settings = Settings()
 openai_client = OpenAI(
-    api_key='', base_url=f'http://{settings.proxy_host}:{settings.proxy_port}/v1/'
+    api_key='cant-be-empty', base_url=f'http://{settings.proxy_host}:{settings.proxy_port}/v1/'
 )
+# https://github.com/etalab-ia/faster-whisper-server
+# curl http://localhost:8000/v1/audio/transcriptions -F "file=@audio.mp3"
 
 
 def configure_logging() -> None:

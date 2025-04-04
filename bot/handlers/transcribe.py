@@ -8,7 +8,7 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import (CommandHandler, ContextTypes, ConversationHandler,
                           filters, MessageHandler)
 from utils import (backend_worker, cancel, chech_user_permition,
-                   sent_message_to_telegram)
+                   markdown_worker, sent_message_to_telegram)
 
 logger = logging.getLogger(settings.app_title)
 
@@ -53,7 +53,8 @@ async def audio_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Op
     if os.access(audio_path, os.R_OK):
         os.remove(audio_path)
     await sent_message_to_telegram(
-        messages=[text if text else Messages.EMPTY_TRANSCRIBE.value], update=update
+        messages=[markdown_worker(text) if text else Messages.EMPTY_TRANSCRIBE.value],
+        update=update
     )
     await update.message.reply_text(
         Messages.REPEAT_TRANSCRIBE.value,
