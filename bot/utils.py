@@ -72,10 +72,10 @@ async def sent_message_to_telegram(messages: list, update: Update) -> None:
         )
 
 
-def backend_worker(audio_file_name: str, language: str = 'ru') -> str:
+def backend_worker(audio_file_name: str) -> str:
     with open(audio_file_name, mode='rb') as file:
         transcript = openai_client.audio.transcriptions.create(
-            model=settings.openai_model, file=file, language=language
+            model=settings.openai_model, file=file
         )
     return transcript.text
 

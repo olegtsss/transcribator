@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
     proxy_port: int = int(os.getenv('PROXY_PORT', '8080'))
 
-    openai_model: str = 'Systran/faster-distil-whisper-large-v3'
+    openai_model: str = 'Systran/faster-whisper-small'
 
     telegram_bot_token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
     users: tuple = tuple(
