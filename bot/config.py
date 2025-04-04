@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
     proxy_port: int = int(os.getenv('PROXY_PORT', '8080'))
 
-    # openai_client = OpenAI(api_key='', base_url='http://{proxy_host}:{proxy_port}/v1/')
     openai_model: str = 'Systran/faster-distil-whisper-large-v3'
 
     telegram_bot_token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
@@ -45,6 +44,9 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+openai_client = OpenAI(
+    api_key='', base_url=f'http://{settings.proxy_host}:{settings.proxy_port}/v1/'
+)
 
 
 def configure_logging() -> None:

@@ -7,7 +7,7 @@ from json import JSONDecodeError
 from typing import Any, Callable, Optional
 
 import httpx
-from config import settings
+from config import openai_client, settings
 from constants import Messages
 from pydantic import ValidationError
 from telegram import Update
@@ -74,7 +74,7 @@ async def sent_message_to_telegram(messages: list, update: Update) -> None:
 
 def backend_worker(audio_file_name: str) -> str:
     with open(audio_file_name, mode='rb') as file:
-        transcript = settings.openai_client.audio.transcriptions.create(
+        transcript = openai_client.audio.transcriptions.create(
             model=settings.openai_model, file=file
         )
     return transcript.text
