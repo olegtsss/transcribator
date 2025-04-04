@@ -1,0 +1,93 @@
+import functools
+import json
+import logging
+from asyncio import sleep
+from json import JSONDecodeError
+from typing import Any, Callable, Optional
+
+import httpx
+from config import settings
+from constants import Messages
+from http import HTTPStatus
+from pydantic import ValidationError
+from telegram import Update
+from telegram.ext import ContextTypes, ConversationHandler
+
+logger = logging.getLogger(settings.app_title)
+
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Any:
+    context.user_data.clear()
+    return ConversationHandler.END
+
+
+class FastApiResponseError(Exception):
+    pass
+
+
+def markdown_worker(text: str) -> str:
+    if text:
+        return (
+            text.
+            replace('.', r'\.').
+            replace('_', r'\_').
+            replace('-', r' ').
+            replace('*', r'\*').
+            replace('[', r'\[').
+            replace(']', r'\]').
+            replace('(', r'\(').
+            replace(')', r'\)').
+            replace('~', r'\~').
+            replace('`', r'\`').
+            replace('<', r'\<').
+            replace('>', r'\>').
+            replace('#', r'\#').
+            replace('+', r'\+').
+            replace('-', r'\-').
+            replace('=', r'\=').
+            replace('|', r'\|').
+            replace('{', r'\{').
+            replace('}', r'\}').
+            replace('!', r'\!')
+        )
+    return ''
+
+
+async def sent_message_to_telegram(messages: list, update: Update) -> None:
+    buffer = ''
+    union_messages = []
+    for message in messages:
+        if len(buffer) + len(message) < settings.telegram_max_symbols_in_message:
+            buffer += message
+        else:
+            union_messages.append(buffer)
+            buffer = message
+    union_messages.append(buffer)
+
+    for message in union_messages:
+        if len(union_messages) > 1:
+            await sleep(settings.telegram_delay_for_message)
+        await update.message.reply_text(
+            text=message, parse_mode=settings.parse_mode, disable_web_page_preview=True
+        )
+
+
+def backend_worker(audio_file_name: str) -> str:
+    with open(audio_file_name, mode='rb') as file:
+        transcript = settings.openai_client.audio.transcriptions.create(
+            model=settings.openai_model, file=file
+        )
+    return transcript.text
+
+
+def chech_user_permition():
+    def wrapper(func: Callable) -> Callable:
+        @functools.wraps(func)
+        async def wrapped(*args, **kwargs) -> Any:
+            update, context = args
+            if update.effective_chat.id not in settings.users:
+                logger.info(Messages.BOT_NOT_PERMIT.value, update.effective_chat.id)
+                return await cancel(update=update, context=context)
+            return await func(*args, **kwargs)
+        return wrapped
+    return wrapper
