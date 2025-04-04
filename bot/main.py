@@ -5,7 +5,6 @@ from handlers.transcribe import main_handler
 from telegram.ext import ApplicationBuilder, CommandHandler
 
 
-
 def create_bot():
     application = ApplicationBuilder().token(settings.telegram_bot_token).build()
     application.add_handler(CommandHandler(Commands.START.value, get_start))

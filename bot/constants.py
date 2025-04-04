@@ -8,6 +8,7 @@ class Messages(str, Enum):
     START_TRANSCRIBE = 'Присылай аудио для транскрибации'
     REPEAT_TRANSCRIBE = 'Присылай еще аудио для транскрибации'
     BOT_NOT_PERMIT = r'Приложение на разработке\.\.\.'
+    EMPTY_TRANSCRIBE = 'В результате транскрибации текст не получен'
 
 
 class Commands(Enum):

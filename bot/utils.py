@@ -2,13 +2,13 @@ import functools
 import json
 import logging
 from asyncio import sleep
+from http import HTTPStatus
 from json import JSONDecodeError
 from typing import Any, Callable, Optional
 
 import httpx
 from config import settings
 from constants import Messages
-from http import HTTPStatus
 from pydantic import ValidationError
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler

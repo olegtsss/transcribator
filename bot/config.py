@@ -4,8 +4,8 @@ from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
 from openai import OpenAI
+from pydantic_settings import BaseSettings
 
 load_dotenv(dotenv_path='.env')
 BASE_DIR = Path(__file__).parent.parent.parent
