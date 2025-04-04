@@ -18,6 +18,7 @@ START: int = 1
 
 @chech_user_permition()
 async def print_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    logger.info(Messages.PRINT_BUTTONS.value, update.effective_chat.id)
     await update.message.reply_text(
         Messages.START_TRANSCRIBE.value,
         reply_markup=ReplyKeyboardMarkup(
@@ -33,6 +34,7 @@ async def print_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 @chech_user_permition()
 async def audio_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Optional[int]:
     audio_file = update.message.audio
+    logger.info(Messages.AUDIO_RECEIVE.value, update.effective_chat.id)
     if not audio_file:
         await update.message.reply_text(
             Messages.REPEAT_TRANSCRIBE.value,
@@ -48,6 +50,7 @@ async def audio_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Op
     # file_name='AUDIO-2025-04-03-09-08-24.m4a', file_size=156336, file_unique_id='AgADBHwAAlVZcEs', mime_type='audio/mpeg')
     new_file = await context.bot.get_file(audio_file.file_id)
     audio_path = f'{settings.temp_dir}/{audio_file.file_unique_id}.m4a'
+    logger.info(Messages.AUDIO_DOWNLOAD.value, audio_path)
     audio_path = await new_file.download_to_drive(audio_path)
     text = backend_worker(audio_path)
     if os.access(audio_path, os.R_OK):

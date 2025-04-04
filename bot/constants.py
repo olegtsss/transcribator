@@ -9,6 +9,9 @@ class Messages(str, Enum):
     REPEAT_TRANSCRIBE = 'Присылай еще аудио для транскрибации'
     BOT_NOT_PERMIT = r'Приложение на разработке\.\.\.'
     EMPTY_TRANSCRIBE = 'В результате транскрибации текст не получен'
+    PRINT_BUTTONS = 'Получен запрос на показ меню от %s'
+    AUDIO_RECEIVE = 'Получен аудио файл от %s'
+    AUDIO_DOWNLOAD = 'Аудио файл сохранен: %s'
 
 
 class Commands(Enum):
