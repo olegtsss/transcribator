@@ -5,6 +5,7 @@ from config import settings
 
 class Messages(str, Enum):
     BOT_START_MESSAGE = 'Приложение на разработке'
+    BOT_START_MESSAGE_LOG = 'Приложение на разработке (обращение %s %s)'
     START_TRANSCRIBE = 'Присылай аудио для транскрибации'
     REPEAT_TRANSCRIBE = 'Присылай еще аудио для транскрибации'
     BOT_NOT_PERMIT = r'Приложение на разработке\.\.\.'
