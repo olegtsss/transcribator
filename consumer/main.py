@@ -6,7 +6,7 @@ from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 import aio_pika
-import Enum
+from enum import Enum
 import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -14,9 +14,12 @@ from openai import OpenAI
 load_dotenv(dotenv_path='.env')
 
 
+APP_NAME: str = 'Consumer'
+
+
 class Messanges(str, Enum):
     BACKEND_START = 'Приложение запущено'
-    ERROR_FROM_EXTERNAL_API = 'При обращении к внутреннему API возникла ошибка, url: %s'
+    ERROR_FROM_EXTERNAL_API = 'При обращении к API возникла ошибка: %s'
 
 
 class Worker:
@@ -34,9 +37,9 @@ class Worker:
             f"@{os.getenv('RABBITMQ_DEFAULT_HOST', None)}:"
             f"{os.getenv('RABBITMQ_DEFAULT_PORT', None)}/"
         )
-        self.instant_queue: str = 'for_worker'
+        self.instant_queue: str = 'for_consumer'
 
-        self.telegram_max_symbols_in_message: str = 4096
+        self.telegram_max_symbols_in_message: int = 4096
         self.telegram_delay_for_message: int = 2
         self.token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
         self.bot_url: str = f'https://api.telegram.org/bot{self.token}/sendMessage'
@@ -88,17 +91,17 @@ class Worker:
 
     async def consume(self) -> None:
         try:
+            connection = await aio_pika.connect_robust(self.rabbit_dsn)
+            channel = await connection.channel()
+            instant_queue = await channel.declare_queue(self.instant_queue, durable=True)
             while True:
-                connection = await aio_pika.connect_robust(self.rabbit_dsn)
-                channel = await connection.channel()
-                instant_queue = await channel.declare_queue(self.instant_queue, durable=True)
                 await instant_queue.consume(self.process_message)
         finally:
             await connection.close()
 
 
 def configure_logging() -> None:
-    app_name = 'Consumer'
+    app_name = APP_NAME
     log_dir = Path(__file__).parent.parent / os.getenv('LOG_DIR', 'logs')
     log_dir.mkdir(exist_ok=True)
     rotating_handler = TimedRotatingFileHandler(
