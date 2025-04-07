@@ -58,6 +58,40 @@ services:
       - logs_transcribator:/app/logs/
       - temp_transcribator:/media/
 
+  transcribator_rabbit:
+    image: rabbitmq:3.12-management
+    container_name: transcribator_rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file: ../.env
+    networks:
+      app_net_2:
+        ipv4_address: 10.0.2.5
+    volumes:
+      - rb_volume:/var/lib/rabbitmq/mnesia
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
+  # transcribator_worker:
+  #   container_name: transcribator_worker
+  #   build:
+  #     context: ../worker/
+  #     dockerfile: Dockerfile_worker
+  #   restart: always
+  #   env_file:
+  #     - ../.env
+  #   networks:
+  #     app_net_2:
+  #       ipv4_address: 10.0.2.6
+  #   entrypoint: >
+  #     bash -c "pip install -r requirements.txt && export PYTHONPATH=/app/worker && python3 worker/main.py"
+
+
 volumes:
   cache_transcribator:
   logs_transcribator:
