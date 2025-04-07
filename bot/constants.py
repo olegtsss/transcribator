@@ -1,7 +1,5 @@
 from enum import Enum
 
-from config import settings
-
 
 class Messages(str, Enum):
     BOT_START_MESSAGE = 'Приложение на разработке'
@@ -13,6 +11,7 @@ class Messages(str, Enum):
     PRINT_BUTTONS = 'Получен запрос на показ меню от %s'
     AUDIO_RECEIVE = 'Получен аудио файл от %s'
     AUDIO_DOWNLOAD = 'Аудио файл сохранен: %s'
+    FILE_VERY_BIG = r'Полученный файл очень большой, обработка отклонена\.'
 
 
 class Commands(Enum):
@@ -23,15 +22,3 @@ class Commands(Enum):
 class Buttons(str, Enum):
     PLACE_HOLDER = 'Жду файл'
     STOP = '\u21AA Выйти'
-
-
-class BackendRoutes(str, Enum):
-    TRANSCRIBATIONS = '/v1/audio/transcriptions'
-
-
-class Differents(str, Enum):
-    PHONE_NUMBER_FIELD = 'phone_number'
-
-
-class Descriptions(str, Enum):
-    PHONE = 'Телефонный номер'

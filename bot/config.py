@@ -38,6 +38,7 @@ class Settings(BaseSettings):
 
     timeout_for_request: int = 60
     max_count_requests: int = 10
+    max_audio_file_size: int = 1024 * 1000 * 512  # 512 Mb
 
     temp_dir: Path = Path(__file__).parent.parent / 'temp'
     temp_dir.mkdir(exist_ok=True)
@@ -47,8 +48,6 @@ settings = Settings()
 openai_client = OpenAI(
     api_key='cant-be-empty', base_url=f'http://{settings.proxy_host}:{settings.proxy_port}/v1/'
 )
-# https://github.com/etalab-ia/faster-whisper-server
-# curl http://localhost:8000/v1/audio/transcriptions -F "file=@audio.mp3"
 
 
 def configure_logging() -> None:

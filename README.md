@@ -8,6 +8,7 @@ Python 3.12, Fastapi, Python-telegram-bot, Docker.
 ### Архитектура проекта:
 
 - 
+# https://github.com/etalab-ia/faster-whisper-server
 
 ### Как запустить проект:
 
