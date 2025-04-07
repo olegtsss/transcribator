@@ -1,14 +1,9 @@
 # Описание проекта transcribator:
-Сервис для
+Сервис для транскрибирования речи.
 
 ### Используемые технологии:
 
-Python 3.12, Fastapi, Python-telegram-bot, Docker.
-
-### Архитектура проекта:
-
-- 
-# https://github.com/etalab-ia/faster-whisper-server
+Python 3.12, Fastapi, Python-telegram-bot, Docker, OpenAI.
 
 ### Как запустить проект:
 
@@ -21,7 +16,6 @@ source venv/bin/activate
 python3 -m pip install --upgrade pip
 pip3 install -r docker/requirements_freeze.txt
 
-python3 backend/main.py
 python3 bot/main.py
 ```
 
@@ -32,6 +26,7 @@ apt install docker docker-compose
 cd /home/
 git clone https://github.com/olegtsss/transcribator.git
 cd transcribator/docker/
+docker build -f Dockerfile_base -t transcribator_base_image .
 docker-compose up -d --build
 ```
 
@@ -48,7 +43,23 @@ docker-compose up -d --build
 ## Шаблон наполнения env-файла:
 
 ```
+LOG_LEVEL=DEBUG
+HOST=127.0.0.1
+PORT=8080
+PROXY_HOST=127.0.0.1
+PROXY_PORT=8080
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_USERS=11111,22222
 
+LOG_DIR=logs
+LOG_BACKUP_COUNT=14
+LOG_WHEN=midnight
+LOG_INTERVAL=1
+LOG_ENCODING=UTF-8
+
+USER_AGENT=Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0
+
+ROOT_TEMP_DIR=
 ```
 
 ### Просмотр логов:
@@ -58,9 +69,6 @@ tail -n 1000 /var/lib/docker/volumes/docker_logs_transcribator/_data/bot.log
 
 docker logs --follow transcribator_bot
 ```
-
-### Примеры raw запросов к backend:
-
 
 ### Разработчик:
 [olegtsss](https://github.com/olegtsss)

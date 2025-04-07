@@ -1,4 +1,4 @@
-FROM spektr_base_image
+FROM transcribator_base_image
 ENTRYPOINT ["python3", "bot/main.py"]
 
 COPY ./ /app/bot/

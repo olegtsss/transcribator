@@ -81,6 +81,7 @@ async def audio_worker(
     text = backend_worker(audio_path)
     if os.access(audio_path, os.R_OK):
         os.remove(audio_path)
+        logger.info(Messages.AUDIO_DELETE.value, audio_path)
     await sent_message_to_telegram(
         messages=[markdown_worker(text) if text else Messages.EMPTY_TRANSCRIBE.value],
         update=update

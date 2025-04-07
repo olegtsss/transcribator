@@ -1,7 +1,5 @@
 pydantic
-flake8
 python-dotenv
-httpx
 python-telegram-bot
 pydantic_settings
 openai

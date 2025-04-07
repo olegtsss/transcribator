@@ -40,8 +40,12 @@ class Settings(BaseSettings):
     max_count_requests: int = 10
     max_audio_file_size: int = 1024 * 1000 * 512  # 512 Mb
 
-    temp_dir: Path = Path(__file__).parent.parent / 'temp'
-    temp_dir.mkdir(exist_ok=True)
+    temp_dir: str = os.getenv('ROOT_TEMP_DIR', None)
+    if temp_dir:
+        os.makedirs('/'.join(temp_dir.split('/')), exist_ok=True)
+    else:
+        temp_dir: Path = Path(__file__).parent.parent / 'temp'
+        temp_dir.mkdir(exist_ok=True)
 
 
 settings = Settings()

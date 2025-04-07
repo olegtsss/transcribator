@@ -1,0 +1,12 @@
+FROM python:3.12
+WORKDIR /app
+RUN groupadd -r web && useradd -d /app -r -g web web \
+    && chown web:web -R /app
+USER web
+
+COPY requirements_freeze.txt /app
+RUN pip3 install --upgrade pip \
+    && pip3 install -r requirements_freeze.txt \
+    && mkdir logs && mkdir temp
+
+ENV PATH="/app/.local/bin/:${PATH}"
