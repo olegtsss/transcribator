@@ -85,7 +85,7 @@ class Worker:
                 telegram_id=telegram_id,
                 messages=[
                     transcript.text[i:i+self.telegram_max_symbols_in_message]
-                    for i in range(0, len(transcript.text))
+                    for i in range(0, len(transcript.text), self.telegram_max_symbols_in_message)
                 ]
             )
 

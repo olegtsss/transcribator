@@ -86,7 +86,7 @@ async def audio_worker(
     await sent_message_to_telegram(
         messages=[
             text[i:i+settings.telegram_max_symbols_in_message]
-            for i in range(0, len(text))
+            for i in range(0, len(text), settings.telegram_max_symbols_in_message)
         ],
         update=update
     )
