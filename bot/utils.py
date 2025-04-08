@@ -49,18 +49,8 @@ def markdown_worker(text: str) -> str:
 
 
 async def sent_message_to_telegram(messages: list, update: Update) -> None:
-    buffer = ''
-    union_messages = []
     for message in messages:
-        if len(buffer) + len(message) < settings.telegram_max_symbols_in_message:
-            buffer += message
-        else:
-            union_messages.append(buffer)
-            buffer = message
-    union_messages.append(buffer)
-
-    for message in union_messages:
-        if len(union_messages) > 1:
+        if len(messages) > 1:
             await sleep(settings.telegram_delay_for_message)
         await update.message.reply_text(
             text=message, parse_mode=settings.parse_mode, disable_web_page_preview=True

@@ -9,7 +9,7 @@ services:
       app_net_3:
         ipv4_address: 10.0.2.2
     ports:
-      - "8000:8000"
+      - "192.168.16.65:8000:8000"
     volumes:
       - cache_transcribator:/root/.cache/huggingface
       - temp_transcribator:/media/

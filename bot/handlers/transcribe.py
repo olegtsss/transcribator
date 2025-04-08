@@ -82,8 +82,12 @@ async def audio_worker(
     if os.access(audio_path, os.R_OK):
         os.remove(audio_path)
         logger.info(Messages.AUDIO_DELETE.value, audio_path)
+    text = markdown_worker(text) or Messages.EMPTY_TRANSCRIBE.value
     await sent_message_to_telegram(
-        messages=[markdown_worker(text) if text else Messages.EMPTY_TRANSCRIBE.value],
+        messages=[
+            text[i:i+settings.telegram_max_symbols_in_message]
+            for i in range(0, len(text))
+        ],
         update=update
     )
     await update.message.reply_text(
@@ -107,6 +111,8 @@ main_handler = ConversationHandler(
                     filters.AUDIO & ~(filters.COMMAND | filters.Regex(Buttons.STOP.value))
                 ) | (
                     filters.FORWARDED & ~(filters.COMMAND | filters.Regex(Buttons.STOP.value))
+                ) | (
+                    filters.VOICE & ~(filters.COMMAND | filters.Regex(Buttons.STOP.value))
                 ),
                 audio_worker
             )
