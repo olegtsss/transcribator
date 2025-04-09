@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     log_encoding: str = os.getenv('LOG_ENCODING', 'UTF-8')
 
     proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
-    proxy_port: int = int(os.getenv('PROXY_PORT', '8080'))
+    proxy_port: int = int(os.getenv('PROXY_WHISPER_PORT', '8080'))
 
     openai_model: str = 'Systran/faster-whisper-small'
 

@@ -4,3 +4,11 @@ python-telegram-bot
 pydantic_settings
 openai
 aio_pika
+
+fastapi
+flake8
+aiosqlite
+httpx
+uvicorn
+pydantic_settings
+greenlet

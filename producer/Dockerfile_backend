@@ -1,0 +1,5 @@
+FROM transcribator_base_image
+ENTRYPOINT ["python3", "producer/main.py"]
+EXPOSE 8081/tcp
+
+COPY ./ /app/producer/
