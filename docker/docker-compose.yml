@@ -96,6 +96,7 @@ volumes:
   cache_transcribator:
   logs_transcribator:
   temp_transcribator:
+  rb_volume:
 
 networks:
   app_net_3:
