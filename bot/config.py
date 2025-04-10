@@ -21,8 +21,11 @@ class Settings(BaseSettings):
     log_internal: int = int(os.getenv('LOG_INTERVAL', '1'))
     log_encoding: str = os.getenv('LOG_ENCODING', 'UTF-8')
 
-    proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
-    proxy_port: int = int(os.getenv('PROXY_WHISPER_PORT', '8080'))
+    whisper_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
+    whisper_port: int = int(os.getenv('PROXY_WHISPER_PORT', '8000'))
+
+    producer_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
+    producer_port: int = int(os.getenv('PROXY_PRODUCER_PORT', '8001'))
 
     openai_model: str = 'Systran/faster-whisper-small'
 
@@ -50,7 +53,8 @@ class Settings(BaseSettings):
 
 settings = Settings()
 openai_client = OpenAI(
-    api_key='cant-be-empty', base_url=f'http://{settings.proxy_host}:{settings.proxy_port}/v1/'
+    api_key='cant-be-empty',
+    base_url=f'http://{settings.whisper_host}:{settings.whisper_port}/v1/'
 )
 
 

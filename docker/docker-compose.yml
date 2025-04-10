@@ -20,62 +20,62 @@ services:
       retries: 3
       start_period: 30s
 
-  transcribator_nginx:
-    container_name: transcribator_nginx
-    image: nginx:1.21.3-alpine
-    depends_on:
-      - transcribator_whisper
-    restart: always
-    env_file:
-      - ../.env
-    networks:
-      app_net_3:
-        ipv4_address: 10.0.2.3
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    healthcheck:
-      test: service nginx status || exit 1
-      interval: 70s
-      timeout: 3s
-      retries: 3
-      start_period: 30s
+  # transcribator_nginx:
+  #   container_name: transcribator_nginx
+  #   image: nginx:1.21.3-alpine
+  #   depends_on:
+  #     - transcribator_whisper
+  #   restart: always
+  #   env_file:
+  #     - ../.env
+  #   networks:
+  #     app_net_3:
+  #       ipv4_address: 10.0.2.3
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #   healthcheck:
+  #     test: service nginx status || exit 1
+  #     interval: 70s
+  #     timeout: 3s
+  #     retries: 3
+  #     start_period: 30s
 
-  transcribator_bot:
-    container_name: transcribator_bot
-    build:
-      context: ../bot/
-      dockerfile: Dockerfile_bot
-    depends_on:
-      - spektr_nginx
-    restart: always
-    env_file:
-      - ../.env
-    networks:
-      app_net_2:
-        ipv4_address: 10.0.2.4
-    volumes:
-      - logs_transcribator:/app/logs/
-      - temp_transcribator:/media/
-
-  # transcribator_rabbit:
-  #   image: rabbitmq:3.12-management
-  #   container_name: transcribator_rabbit
-  #   ports:
-  #     - 5672:5672
-  #     - 192.168.16.65:15672:15672
-  #   env_file: ../.env
+  # transcribator_bot:
+  #   container_name: transcribator_bot
+  #   build:
+  #     context: ../bot/
+  #     dockerfile: Dockerfile_bot
+  #   depends_on:
+  #     - spektr_nginx
+  #   restart: always
+  #   env_file:
+  #     - ../.env
   #   networks:
   #     app_net_2:
-  #       ipv4_address: 10.0.2.5
+  #       ipv4_address: 10.0.2.4
   #   volumes:
-  #     - rb_volume:/var/lib/rabbitmq/mnesia
-  #   restart: always
-  #   healthcheck:
-  #     test: ["CMD", "rabbitmqctl", "ping"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
+  #     - logs_transcribator:/app/logs/
+  #     - temp_transcribator:/media/
+
+  transcribator_rabbit:
+    image: rabbitmq:3.12-management
+    container_name: transcribator_rabbit
+    ports:
+      - 192.168.16.65:5672:5672
+      - 192.168.16.65:15672:15672
+    env_file: ../.env
+    networks:
+      app_net_2:
+        ipv4_address: 10.0.2.5
+    volumes:
+      - rb_volume:/var/lib/rabbitmq/mnesia
+    restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   
   # transcribator_consumer:
   #   container_name: transcribator_consumer

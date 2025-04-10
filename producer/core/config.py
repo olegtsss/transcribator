@@ -20,7 +20,16 @@ class Settings(BaseSettings):
     log_encoding: str = os.getenv('LOG_ENCODING', 'UTF-8')
 
     host: str = os.getenv('PRODUCER_LISTENING_IP', '127.0.0.1')
-    port: int = int(os.getenv('PRODUCER_LISTENING_PORT', '8081'))
+    port: int = int(os.getenv('PRODUCER_LISTENING_PORT', '8001'))
+
+    rabbit_dsn: str = (
+        f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER', None)}:"
+        f"{os.getenv('RABBITMQ_DEFAULT_PASS', None)}"
+        f"@{os.getenv('RABBITMQ_DEFAULT_HOST', None)}:"
+        f"{os.getenv('RABBITMQ_DEFAULT_PORT', None)}/"
+    )
+    transcribe_exchange: str = 'produce_exchange'
+    transcribe_queue: str = 'task_for_tarnscribe'
 
     timeout_for_requests: int = 10
 

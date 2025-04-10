@@ -9,7 +9,7 @@ class Messanges(str, Enum):
     BACKEND_START = 'Приложение запущено'
     SERVER_ERROR = 'Internal server error'
     TASK_CANCELED_FOR_TIMEOUT_COMMON = 'Задание отменено по таймауту, вызывалась функция %s'
-    RECEIVE_DATA_FOR_PRODUCE = 'Получены данне для загрузки: %s'
+    RECEIVE_DATA_FOR_PRODUCE = 'Получены данные для загрузки: %s'
 
 
 class Descriptions(str, Enum):
@@ -18,3 +18,4 @@ class Descriptions(str, Enum):
     HEALTH = 'Проверка отклика api для producer'
     TELEGRAM_ID = 'Telegram ID'
     PATH = 'Путь до файла'
+    CLICK_HEALTH = 'Получен health запрос'

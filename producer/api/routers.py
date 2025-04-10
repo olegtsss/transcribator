@@ -6,11 +6,11 @@ from fastapi import APIRouter
 main_router = APIRouter(prefix='/api')
 main_router.include_router(
     rabbit_router,
-    prefix='v1/rabbit',
+    prefix='/v1/rabbit',
     tags=[Descriptions.RABBIT.value]
 )
 main_router.include_router(
     health_router,
-    prefix='v1/healthcheck',
+    prefix='/v1/healthcheck',
     tags=[Descriptions.HEALTH.value]
 )

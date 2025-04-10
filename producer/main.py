@@ -9,6 +9,7 @@ from core.middlewares import create_uvicorn_log
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from bus.rabbit import bus_service
 
 logger = logging.getLogger(settings.app_title)
 
@@ -17,7 +18,10 @@ logger = logging.getLogger(settings.app_title)
 async def lifespan(app: FastAPI):
     logger.debug(Messanges.BACKEND_START.value)
     create_uvicorn_log()
+    await bus_service.create_connection()
+    await bus_service.prepair_channel()
     yield
+    await bus_service.close_connection()
 
 
 app = FastAPI(title=settings.app_title, lifespan=lifespan, docs_url=None, redoc_url=None)

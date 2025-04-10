@@ -37,7 +37,7 @@ class Worker:
             f"@{os.getenv('RABBITMQ_DEFAULT_HOST', None)}:"
             f"{os.getenv('RABBITMQ_DEFAULT_PORT', None)}/"
         )
-        self.instant_queue: str = 'for_consumer'
+        self.transcribe_queue: str = 'task_for_tarnscribe'
 
         self.telegram_max_symbols_in_message: int = 4096
         self.telegram_delay_for_message: int = 2
@@ -93,7 +93,7 @@ class Worker:
         try:
             connection = await aio_pika.connect_robust(self.rabbit_dsn)
             channel = await connection.channel()
-            instant_queue = await channel.declare_queue(self.instant_queue, durable=True)
+            instant_queue = await channel.declare_queue(self.transcribe_queue, durable=True)
             while True:
                 await instant_queue.consume(self.process_message)
         finally:
