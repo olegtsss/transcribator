@@ -4,13 +4,11 @@ python-telegram-bot
 pydantic_settings
 openai
 aio_pika
-
 fastapi
 flake8
 aiosqlite
 uvicorn
 pydantic_settings
 greenlet
-
 aiohttp
 backoff

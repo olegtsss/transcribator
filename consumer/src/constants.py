@@ -12,4 +12,4 @@ class Messanges(str, Enum):
     AUDIO_DELETE = 'Файл удален %s'
     EMPTY_TRANSCRIBE = 'В результате транскрибации текст не получен'
     RETRY_ERROR = 'Во время запроса произошла ошибка (попытка %s), повторная попытка. Ошибка: %s'
-    ANSWER = 'Задание {entity_id}:\n\n{text}'
+    ANSWER = '{entity_id}:\n\n{text}'
