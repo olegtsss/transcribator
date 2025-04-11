@@ -3,13 +3,13 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from api.routers import main_router
+from bus.rabbit import bus_service
 from core.config import settings
 from core.constants import Differents, Messanges
 from core.middlewares import create_uvicorn_log
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from bus.rabbit import bus_service
 
 logger = logging.getLogger(settings.app_title)
 

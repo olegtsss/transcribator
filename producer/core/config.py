@@ -23,10 +23,10 @@ class Settings(BaseSettings):
     port: int = int(os.getenv('PRODUCER_LISTENING_PORT', '8001'))
 
     rabbit_dsn: str = (
-        f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER', None)}:"
-        f"{os.getenv('RABBITMQ_DEFAULT_PASS', None)}"
-        f"@{os.getenv('RABBITMQ_DEFAULT_HOST', None)}:"
-        f"{os.getenv('RABBITMQ_DEFAULT_PORT', None)}/"
+        f"amqp://{os.getenv('RABBITMQ_DEFAULT_USER', 'guest')}:"
+        f"{os.getenv('RABBITMQ_DEFAULT_PASS', 'guest')}"
+        f"@{os.getenv('RABBITMQ_DEFAULT_HOST', '127.0.0.1')}:"
+        f"{os.getenv('RABBITMQ_DEFAULT_PORT', '5672')}/"
     )
     transcribe_exchange: str = 'produce_exchange'
     transcribe_queue: str = 'task_for_tarnscribe'

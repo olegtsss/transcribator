@@ -1,10 +1,8 @@
 import asyncio
 import functools
 import logging
-from asyncio import sleep
-from typing import Any, Callable, List
+from typing import Any, Callable
 
-import httpx
 from core.config import settings
 from core.constants import Messanges
 from fastapi import Response, status

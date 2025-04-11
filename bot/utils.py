@@ -1,23 +1,31 @@
+import asyncio
 import functools
 import logging
-from asyncio import sleep
+from http import HTTPStatus
 from typing import Any, Callable
 
-from config import openai_client, settings
-from constants import Messages
+import aiohttp
+from aiohttp.client_exceptions import ClientConnectorError
+from aiohttp.web import HTTPException
+from config import settings
+from constants import Messages, Routes
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 logger = logging.getLogger(settings.app_title)
 
 
+class FastApiResponseError(Exception):
+    pass
+
+
+class TooManyRetries(Exception):
+    pass
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Any:
     context.user_data.clear()
     return ConversationHandler.END
-
-
-class FastApiResponseError(Exception):
-    pass
 
 
 def markdown_worker(text: str) -> str:
@@ -51,18 +59,10 @@ def markdown_worker(text: str) -> str:
 async def sent_message_to_telegram(messages: list, update: Update) -> None:
     for message in messages:
         if len(messages) > 1:
-            await sleep(settings.telegram_delay_for_message)
+            await asyncio.sleep(settings.telegram_delay_for_message)
         await update.message.reply_text(
             text=message, parse_mode=settings.parse_mode, disable_web_page_preview=True
         )
-
-
-def backend_worker(audio_file_name: str) -> str:
-    with open(audio_file_name, mode='rb') as file:
-        transcript = openai_client.audio.transcriptions.create(
-            model=settings.openai_model, file=file
-        )
-    return transcript.text
 
 
 def chech_user_permition():
@@ -76,3 +76,30 @@ def chech_user_permition():
             return await func(*args, **kwargs)
         return wrapped
     return wrapper
+
+
+async def request_to_produse_service(path: str, data: dict) -> str:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            (
+                f'http://{settings.producer_host}:{settings.producer_port}/'
+                f'{Routes.PRODUCE_TASK.value}'
+            ),
+            json=data
+        ) as response:
+            if response.status not in (HTTPStatus.CREATED,):
+                logger.error(Messages.TASK_REQUEST_ERROR.value, response.status)
+                raise FastApiResponseError
+            return await response.text()
+
+
+async def retry_requests(
+    coro: Callable, max_retries: int = 5, timeout: int = 5, retry_interval: int = 1
+) -> str:
+    for retry_num in range(max_retries):
+        try:
+            return await asyncio.wait_for(coro(), timeout=timeout)
+        except (HTTPException, ClientConnectorError, FastApiResponseError) as error:
+            logger.error(Messages.RETRY_ERROR.value, retry_num, error)
+        await asyncio.sleep(retry_interval)
+    raise TooManyRetries

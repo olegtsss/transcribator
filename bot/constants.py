@@ -9,10 +9,19 @@ class Messages(str, Enum):
     BOT_NOT_PERMIT = r'Приложение на разработке\.\.\.'
     EMPTY_TRANSCRIBE = 'В результате транскрибации текст не получен'
     PRINT_BUTTONS = 'Получен запрос на показ меню от %s'
-    AUDIO_RECEIVE = 'Получен аудио файл от %s'
+    AUDIO_RECEIVE = 'Получен аудио файл от %s, длительность %s'
     AUDIO_DOWNLOAD = 'Аудио файл сохранен: %s'
     AUDIO_DELETE = 'Аудио файл удален: %s'
     FILE_VERY_BIG = r'Полученный файл очень большой, обработка отклонена\.'
+    TASK_ID = 'Задание отправлено в producer, task_id=%s'
+    TASK_CREATE = (
+        r'Задание на транскрибацию создано, ответ придет позже\. '
+        'Присылай еще аудио для транскрибации'
+    )
+    TASK_ERROR = 'Задание на транскрибацию не было создано, попробуй еще раз'
+    TASK_REQUEST_ERROR = 'Запрос к сервису producer завершился с кодом возврата %s'
+    RETRY_ERROR = 'Во время запроса произошла ошибка (попытка %s), повторная попытка. Ошибка: %s'
+    RETRY_ERROR_FULL = 'Все попытки подключения к сервису producer исчерпаны'
 
 
 class Commands(Enum):
@@ -23,3 +32,7 @@ class Commands(Enum):
 class Buttons(str, Enum):
     PLACE_HOLDER = 'Жду файл'
     STOP = '\u21AA Выйти'
+
+
+class Routes(str, Enum):
+    PRODUCE_TASK = 'api/v1/rabbit/create_task'

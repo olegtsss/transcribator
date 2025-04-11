@@ -1,7 +1,7 @@
 import logging
 
 from core.config import settings
-from core.constants import Messanges, Descriptions
+from core.constants import Descriptions, Messanges
 from fastapi import APIRouter, Response, status
 
 router = APIRouter()

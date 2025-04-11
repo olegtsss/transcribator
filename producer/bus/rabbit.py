@@ -1,6 +1,7 @@
-from core.config import settings
-import aio_pika
 from functools import lru_cache
+
+import aio_pika
+from core.config import settings
 
 
 class Bus:
@@ -8,17 +9,17 @@ class Bus:
         self.connection = None
         self.channel = None
 
-    async def create_connection(self, durable: bool = True) -> None:
+    async def create_connection(self) -> None:
         self.connection = await aio_pika.connect_robust(settings.rabbit_dsn)
-        
+
     async def prepair_channel(self) -> None:
         self.channel = await self.connection.channel()
         await self.channel.declare_exchange(
-            settings.transcribe_exchange, aio_pika.ExchangeType.DIRECT, durable=durable
+            settings.transcribe_exchange, aio_pika.ExchangeType.DIRECT, auto_delete=True
         )
 
     async def close_connection(self) -> None:
-        self.connection.close()
+        await self.connection.close()
 
 
 @lru_cache
