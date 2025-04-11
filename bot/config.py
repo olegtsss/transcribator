@@ -4,7 +4,6 @@ from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai import OpenAI
 from pydantic_settings import BaseSettings
 
 load_dotenv(dotenv_path='.env')
@@ -21,23 +20,14 @@ class Settings(BaseSettings):
     log_internal: int = int(os.getenv('LOG_INTERVAL', '1'))
     log_encoding: str = os.getenv('LOG_ENCODING', 'UTF-8')
 
-    whisper_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
-    whisper_port: int = int(os.getenv('PROXY_WHISPER_PORT', '8000'))
-
     producer_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
     producer_port: int = int(os.getenv('PROXY_PRODUCER_PORT', '8001'))
-
-    openai_model: str = 'Systran/faster-whisper-small'
 
     telegram_bot_token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
     users: tuple = tuple(
         int(telegram_id) for telegram_id in os.getenv('TELEGRAM_USERS', '').split(',')
     )
     parse_mode: str = 'MarkdownV2'
-    telegram_max_symbols_in_message: int = 4096
-    telegram_delay_for_message: int = 2
-    format_date_time: str = '%Y.%m.%d %H:%M'
-    slice_for_logging_message: int = 100
 
     timeout_for_request: int = 60
     max_count_requests: int = 10
@@ -52,10 +42,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-openai_client = OpenAI(
-    api_key='cant-be-empty',
-    base_url=f'http://{settings.whisper_host}:{settings.whisper_port}/v1/'
-)
 
 
 def configure_logging() -> None:

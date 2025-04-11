@@ -4,8 +4,10 @@ from http import HTTPStatus
 from typing import Callable
 
 import aiohttp
+import backoff
 from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp.web import HTTPException
+from openai import OpenAI
 from src.config import settings
 from src.constants import APP_NAME, Messanges
 
@@ -18,6 +20,17 @@ class HttpResponseError(Exception):
 
 class TooManyRetries(Exception):
     pass
+
+
+@backoff.on_exception(
+    backoff.expo, ConnectionError, max_time=settings.backoff_max_time,
+    max_tries=settings.backoff_max_tries
+)
+def get_openai_client() -> OpenAI:
+    return OpenAI(
+        api_key='cant-be-empty',
+        base_url=f'http://{settings.proxy_host}:{settings.whisper_port}/v1/'
+    )
 
 
 async def retry_requests(

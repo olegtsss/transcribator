@@ -91,7 +91,9 @@ async def audio_worker(
         logger.info(Messages.TASK_ID.value, produser_task_id)
         if produser_task_id:
             await update.message.reply_text(
-                Messages.TASK_CREATE.value,
+                Messages.TASK_CREATE.value.format(
+                    task_id=produser_task_id.split('-')[-1].replace('"', '')
+                ),
                 reply_markup=ReplyKeyboardMarkup(
                     [[Buttons.STOP.value]],
                     one_time_keyboard=True, resize_keyboard=True,

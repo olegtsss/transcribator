@@ -4,7 +4,6 @@ from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai import OpenAI
 from pydantic_settings import BaseSettings
 from src.constants import APP_NAME
 
@@ -16,9 +15,6 @@ BASE_DIR = Path(__file__).parent.parent.parent
 class Settings(BaseSettings):
     proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
     whisper_port: int = int(os.getenv('PROXY_WHISPER_PORT', '8080'))
-    openai_client: OpenAI = OpenAI(
-        api_key='cant-be-empty', base_url=f'http://{proxy_host}:{whisper_port}/v1/'
-    )
     openai_model: str = 'Systran/faster-whisper-small'
 
     rabbit_dsn: str = (
@@ -34,6 +30,9 @@ class Settings(BaseSettings):
     token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
     bot_url: str = f'https://api.telegram.org/bot{token}/sendMessage'
     http_headers: dict = {'User-Agent': os.getenv('USER_AGENT', None)}
+
+    backoff_max_time: int = 30
+    backoff_max_tries: int = 5
 
 
 settings = Settings()

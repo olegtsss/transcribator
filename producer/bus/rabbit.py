@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 import aio_pika
+import backoff
 from core.config import settings
 
 
@@ -9,6 +10,10 @@ class Bus:
         self.connection = None
         self.channel = None
 
+    @backoff.on_exception(
+        backoff.expo, ConnectionError, max_time=settings.backoff_max_time,
+        max_tries=settings.backoff_max_tries
+    )
     async def create_connection(self) -> None:
         self.connection = await aio_pika.connect_robust(settings.rabbit_dsn)
 

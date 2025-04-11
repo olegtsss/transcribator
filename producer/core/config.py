@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     transcribe_queue: str = 'task_for_tarnscribe'
 
     timeout_for_requests: int = 10
+    backoff_max_time: int = 30
+    backoff_max_tries: int = 5
 
 
 settings = Settings()
