@@ -1,0 +1,4 @@
+FROM transcribator_base_image
+ENTRYPOINT ["python3", "consumer/main.py"]
+
+COPY ./ /app/consumer/

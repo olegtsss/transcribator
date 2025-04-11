@@ -1,9 +1,10 @@
 # Описание проекта transcribator:
-Сервис для транскрибирования речи.
+Сервис для транскрибирования речи. Построен по микросервисной архитектуре. Интерфейс взаимодействия с пользователем орагнизован посредством телеграм бота, который принимает аудио сообщение от пользователя и сохраняет его на диск, после чего делает запрос на сервис `producer` о создании задания для транскрибирования. Сервис `producer` загружает задание в брокер сообщений, откуда они доставляются на сервис `consumer`, который уже отправляет ссылку на скаченный ранее файл в обработку в сервис `OpenAI`, а полученный текст направляет пользователю в телеграм.
 
 ### Используемые технологии:
 
-Python 3.12, Fastapi, Python-telegram-bot, Docker, OpenAI.
+Python 3.12, Fastapi, Python-telegram-bot, Docker, OpenAI, RabbitMQ.
+
 
 ### Как запустить проект:
 
@@ -17,6 +18,8 @@ python3 -m pip install --upgrade pip
 pip3 install -r docker/requirements_freeze.txt
 
 python3 bot/main.py
+python3 producer/main.py
+python3 consumer/main.py
 ```
 
 ### Как запустить проект в Docker:
@@ -50,7 +53,7 @@ PROXY_WHISPER_PORT=8000
 PROXY_PRODUCER_PORT=8001
 
 PRODUCER_LISTENING_IP=127.0.0.1
-PRODUCER_LISTENING_PORT=8081
+PRODUCER_LISTENING_PORT=8001
 
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_USERS=11111,22222
