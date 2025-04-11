@@ -6,6 +6,7 @@ from typing import Callable
 import aiohttp
 from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp.web import HTTPException
+from src.config import settings
 from src.constants import APP_NAME, Messanges
 
 logger = logging.getLogger(APP_NAME)
@@ -21,7 +22,7 @@ class TooManyRetries(Exception):
 
 async def retry_requests(
     coro: Callable, max_retries: int = 5, timeout: int = 5, retry_interval: int = 1
-) -> str:
+) -> None:
     for retry_num in range(max_retries):
         try:
             return await asyncio.wait_for(coro(), timeout=timeout)
@@ -32,11 +33,11 @@ async def retry_requests(
 
 
 async def raw_sent_message_to_telegram(
-    self, telegram_id: int, message: str, chat_id_post: str = 'chat_id', text_post: str = 'text'
+    telegram_id: int, message: str, chat_id_post: str = 'chat_id', text_post: str = 'text'
 ) -> None:
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            self.bot_url, headers=self.http_headers,
+            settings.bot_url, headers=settings.http_headers,
             json={chat_id_post: telegram_id, text_post: message}
         ) as response:
             if response.status not in (HTTPStatus.OK,):
