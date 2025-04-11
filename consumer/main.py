@@ -42,7 +42,7 @@ class Worker:
                     Messanges.TRANSCRIPT_SUCCESS.value, data.audio_path, len(transcript.text)
                 )
                 text = Messanges.ANSWER.value.format(
-                    entity_id=data.entity_id.split('-')[-1], text=transcript.text
+                    entity_id=f'{data.entity_id}'.split('-')[-1], text=transcript.text
                 )
             else:
                 text = Messanges.EMPTY_TRANSCRIBE.value
