@@ -44,7 +44,7 @@ def configure_logging() -> None:
     log_dir = Path(__file__).parent.parent.parent / os.getenv('LOG_DIR', 'logs')
     log_dir.mkdir(exist_ok=True)
     rotating_handler = TimedRotatingFileHandler(
-        log_dir / f'{app_name}.log',
+        log_dir / f'{app_name.lower()}.log',
         backupCount=int(os.getenv('LOG_BACKUP_COUNT', '14')),
         when=os.getenv('LOG_WHEN', 'midnight'),
         interval=int(os.getenv('LOG_INTERVAL', '1')),

@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import logging
 from http import HTTPStatus
 from typing import Callable
@@ -45,18 +46,23 @@ async def retry_requests(
     raise TooManyRetries
 
 
-async def raw_sent_message_to_telegram(
-    telegram_id: int, message: str, chat_id_post: str = 'chat_id', text_post: str = 'text'
-) -> None:
+async def http_post(
+    session, telegram_id: int, message: str,
+    chat_id_post: str = 'chat_id', text_post: str = 'text'
+) -> str:
+    async with session.post(
+        settings.bot_url, headers=settings.http_headers,
+        json={chat_id_post: telegram_id, text_post: message}
+    ) as response:
+        if response.status not in (HTTPStatus.OK,):
+            logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)
+            raise HttpResponseError
+        return await response.text()
+
+
+async def raw_sent_message_to_telegram(telegram_id: int, message: str) -> None:
     async with aiohttp.ClientSession() as session:
-        async with session.post(
-            settings.bot_url, headers=settings.http_headers,
-            json={chat_id_post: telegram_id, text_post: message}
-        ) as response:
-            if response.status not in (HTTPStatus.OK,):
-                logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)
-                raise HttpResponseError
-            return await response.text()
+        await retry_requests(functools.partial(http_post, session, telegram_id, message))
 
 
 def error_handling(func):
