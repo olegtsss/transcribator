@@ -40,7 +40,7 @@ async def retry_requests(
     for retry_num in range(max_retries):
         try:
             return await asyncio.wait_for(coro(), timeout=timeout)
-        except (HTTPException, ClientConnectorError, HttpResponseError) as error:
+        except (TimeoutError, HTTPException, ClientConnectorError, HttpResponseError) as error:
             logger.error(Messanges.RETRY_ERROR.value, retry_num, error)
         await asyncio.sleep(retry_interval)
     raise TooManyRetries
