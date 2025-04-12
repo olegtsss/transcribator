@@ -9,8 +9,6 @@ from src.constants import APP_NAME
 
 load_dotenv(dotenv_path='.env')
 
-BASE_DIR = Path(__file__).parent.parent.parent.parent
-
 
 class Settings(BaseSettings):
     proxy_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
@@ -43,7 +41,7 @@ settings = Settings()
 
 def configure_logging() -> None:
     app_name = APP_NAME
-    log_dir = Path(__file__).parent.parent / os.getenv('LOG_DIR', 'logs')
+    log_dir = Path(__file__).parent.parent.parent / os.getenv('LOG_DIR', 'logs')
     log_dir.mkdir(exist_ok=True)
     rotating_handler = TimedRotatingFileHandler(
         log_dir / f'{app_name}.log',

@@ -55,9 +55,9 @@ class Worker:
                 if len(messages) > 1:
                     await sleep(settings.telegram_delay_for_message)
                 try:
-                    logger.info(
-                        Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
-                    )
+                    # logger.info(
+                    #     Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
+                    # )
                     await retry_requests(
                         functools.partial(raw_sent_message_to_telegram, data.telegram_id, message)
                     )

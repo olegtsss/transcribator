@@ -6,8 +6,6 @@ from pydantic_settings import BaseSettings
 
 load_dotenv(dotenv_path='.env')
 
-BASE_DIR = Path(__file__).parent.parent.parent
-
 
 class Settings(BaseSettings):
     app_title: str = os.getenv('APP_TITLE', 'Producer')
