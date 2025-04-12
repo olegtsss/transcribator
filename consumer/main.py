@@ -68,10 +68,10 @@ class Worker:
         connection = await aio_pika.connect_robust(settings.rabbit_dsn)
         try:
             channel = await connection.channel()
-            instant_queue = await channel.declare_queue(settings.transcribe_queue, durable=False)
+            instant_queue = await channel.declare_queue(settings.transcribe_queue, durable=True)
             while True:
                 await instant_queue.consume(callback=self.process_message)
-                sleep(settings.consume_timeout)
+                await sleep(settings.consume_timeout)
         finally:
             await connection.close()
 
