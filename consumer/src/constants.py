@@ -13,3 +13,5 @@ class Messanges(str, Enum):
     EMPTY_TRANSCRIBE = 'В результате транскрибации текст не получен'
     RETRY_ERROR = 'Во время запроса произошла ошибка (попытка %s), повторная попытка. Ошибка: %s'
     ANSWER = '{entity_id}:\n\n{text}'
+    MESSAGE_DONT_SEND = 'Не удалось отправить сообщение пользователю %s: %s'
+    MESSAGE_DONE = 'Сообщение готово к отправке: %s'

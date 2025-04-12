@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     backoff_max_time: int = 30
     backoff_max_tries: int = 5
 
+    logging_message_slice: int = 200
+
 
 settings = Settings()
 

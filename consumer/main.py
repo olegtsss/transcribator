@@ -11,7 +11,7 @@ from pydantic import ValidationError
 from src.config import configure_logging, settings
 from src.constants import APP_NAME, Messanges
 from src.schemas import LoadData
-from src.utils import (error_handling, get_openai_client,
+from src.utils import (error_handling, get_openai_client, TooManyRetries,
                        raw_sent_message_to_telegram, retry_requests)
 
 logger = logging.getLogger(APP_NAME)
@@ -54,9 +54,18 @@ class Worker:
             for message in messages:
                 if len(messages) > 1:
                     await sleep(settings.telegram_delay_for_message)
-                await retry_requests(
-                    functools.partial(raw_sent_message_to_telegram, data.telegram_id, message)
-                )
+                try:
+                    logger.info(
+                        Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
+                    )
+                    await retry_requests(
+                        functools.partial(raw_sent_message_to_telegram, data.telegram_id, message)
+                    )
+                except TooManyRetries:
+                    logger.error(
+                        Messanges.MESSAGE_DONT_SEND.value, data.telegram_id,
+                        message[:settings.logging_message_slice]
+                    )
             os.remove(data.audio_path)
             logger.info(Messanges.AUDIO_DELETE.value, data.audio_path)
 
