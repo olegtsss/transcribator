@@ -21,3 +21,5 @@ class Descriptions(str, Enum):
     HEALTH = 'Проверка отклика api для producer'
     TELEGRAM_ID = 'Telegram ID'
     PATH = 'Путь до файла'
+    UUID = 'ID задания'
+    CREATED = 'Дата создания задания'
