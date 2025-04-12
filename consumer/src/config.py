@@ -24,6 +24,7 @@ class Settings(BaseSettings):
         f"{os.getenv('RABBITMQ_DEFAULT_PORT', None)}/"
     )
     transcribe_queue: str = 'task_for_tarnscribe'
+    consume_timeout: int = 1
 
     telegram_max_symbols_in_message: int = 4096
     telegram_delay_for_message: int = 2
