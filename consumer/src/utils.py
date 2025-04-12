@@ -35,7 +35,7 @@ def get_openai_client() -> OpenAI:
 
 
 async def retry_requests(
-    coro: Callable, max_retries: int = 5, timeout: int = 15, retry_interval: int = 1
+    coro: Callable, max_retries: int = 5, timeout: int = 5, retry_interval: int = 1
 ) -> None:
     for retry_num in range(max_retries):
         try:
