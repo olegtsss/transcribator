@@ -32,7 +32,7 @@ class CircuitOpenException(Exception):
 class CircuitBreaker:
 
     def __init__(
-        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 2,
+        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 5,
         reset_interval: int = 60
     ) -> None:
         self.callback = callback
@@ -140,15 +140,15 @@ telegram_service = get_telegram_service()
 
 async def raw_sent_message_to_telegram(telegram_id: int, messages: list) -> None:
     async with aiohttp.ClientSession() as session:
-        try:
-            for message in messages:
-                if len(messages) > 1:
-                    await asyncio.sleep(settings.telegram_delay_for_message)
+        for message in messages:
+            if len(messages) > 1:
+                await asyncio.sleep(settings.telegram_delay_for_message)
+            try:
                 await telegram_service.request(
                     functools.partial(http_post, session, telegram_id, message)
                 )
-        except CircuitOpenException:
-            logger.error(
-                Messanges.MESSAGE_DONT_SEND.value, telegram_id,
-                message[:settings.logging_message_slice]
-            )
+            except CircuitOpenException:
+                logger.error(
+                    Messanges.MESSAGE_DONT_SEND.value, telegram_id,
+                    message[:settings.logging_message_slice]
+                )
