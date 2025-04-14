@@ -101,7 +101,7 @@ async def retry_requests(
             # timeout обрабатывается в CircuitBreaker
             # return await asyncio.wait_for(coro(), timeout=timeout)
             return await coro()
-        except (TimeoutError, HTTPException, ClientConnectorError, HttpResponseError) as error:
+        except (HTTPException, ClientConnectorError, HttpResponseError) as error:
             logger.error(Messanges.RETRY_ERROR.value, retry_num, error)
         await asyncio.sleep(retry_interval)
     raise TooManyRetries
@@ -138,8 +138,17 @@ def get_telegram_service() -> CircuitBreaker:
 telegram_service = get_telegram_service()
 
 
-async def raw_sent_message_to_telegram(telegram_id: int, message: str) -> None:
+async def raw_sent_message_to_telegram(telegram_id: int, messages: list) -> None:
     async with aiohttp.ClientSession() as session:
-        await telegram_service.request(
-            functools.partial(http_post, session, telegram_id, message)
-        )
+        try:
+            for message in messages:
+                if len(messages) > 1:
+                    await asyncio.sleep(settings.telegram_delay_for_message)
+                await telegram_service.request(
+                    functools.partial(http_post, session, telegram_id, message)
+                )
+        except CircuitOpenException:
+            logger.error(
+                Messanges.MESSAGE_DONT_SEND.value, telegram_id,
+                message[:settings.logging_message_slice]
+            )

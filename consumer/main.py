@@ -50,19 +50,10 @@ class Worker:
                 text[i:i+settings.telegram_max_symbols_in_message]
                 for i in range(0, len(text), settings.telegram_max_symbols_in_message)
             ]
-            for message in messages:
-                if len(messages) > 1:
-                    await sleep(settings.telegram_delay_for_message)
-                try:
-                    # logger.info(
-                    #     Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
-                    # )
-                    await raw_sent_message_to_telegram(data.telegram_id, message)
-                except CircuitOpenException:
-                    logger.error(
-                        Messanges.MESSAGE_DONT_SEND.value, data.telegram_id,
-                        message[:settings.logging_message_slice]
-                    )
+            # logger.info(
+                #     Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
+            # )
+            await raw_sent_message_to_telegram(data.telegram_id, messages)
             os.remove(data.audio_path)
             logger.info(Messanges.AUDIO_DELETE.value, data.audio_path)
 
