@@ -89,9 +89,10 @@ async def request_to_produse_service(path: str, data: dict) -> str:
         async with session.post(
             (
                 f'http://{settings.producer_host}:{settings.producer_port}/'
-                f'{Routes.PRODUCE_TASK.value}'
+                f'{Routes.PRODUCE_TASK.value}',
             ),
-            json=data
+            json=data,
+            timeout=5
         ) as response:
             if response.status not in (HTTPStatus.CREATED,):
                 logger.error(Messages.TASK_REQUEST_ERROR.value, response.status)
