@@ -91,8 +91,7 @@ async def request_to_produse_service(path: str, data: dict) -> str:
                 f'http://{settings.producer_host}:{settings.producer_port}/'
                 f'{Routes.PRODUCE_TASK.value}',
             ),
-            json=data,
-            timeout=5
+            json=data
         ) as response:
             if response.status not in (HTTPStatus.CREATED,):
                 logger.error(Messages.TASK_REQUEST_ERROR.value, response.status)
@@ -117,8 +116,8 @@ async def retry_requests(
 class CircuitBreaker:
 
     def __init__(
-        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 2,
-        reset_interval: int = 60
+        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 25,
+        reset_interval: int = 30
     ) -> None:
         self.callback = callback
         self.timeout = timeout
