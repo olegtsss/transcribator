@@ -15,3 +15,8 @@ class Messanges(str, Enum):
     ANSWER = '{entity_id}:\n\n{text}'
     MESSAGE_DONT_SEND = 'Не удалось отправить сообщение пользователю %s: %s'
     MESSAGE_DONE = 'Сообщение готово к отправке: %s'
+
+    CIRCUIT_BREAKER_RESET = 'Прерыватель переходит из разомкнутого состояния в замкнутое, сброc!'
+    CIRCUIT_BREAKER_CLOSE = 'Прерыватель замкнут, отправляю запрос!'
+    CIRCUIT_BREAKER_OPEN = 'Прерыватель разомкнут, быстрый отказ!'
+    CIRCUIT_BREAKER_CATCH_TIMEOUT = 'Прерыватель перехватил таймаут'

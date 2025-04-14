@@ -8,8 +8,8 @@ from schemas.task import LoadData
 from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import (CommandHandler, ContextTypes, ConversationHandler,
                           filters, MessageHandler)
-from utils import (cancel, chech_user_permition, request_to_produse_service,
-                   retry_requests, TooManyRetries)
+from utils import (cancel, chech_user_permition, CircuitOpenException,
+                   producer_service, request_to_produse_service)
 
 logger = logging.getLogger(settings.app_title)
 
@@ -81,7 +81,7 @@ async def audio_worker(
     await new_file.download_to_drive(audio_path)
 
     try:
-        produser_task_id: str = await retry_requests(
+        produser_task_id: str = await producer_service.request(
             functools.partial(
                 request_to_produse_service,
                 audio_path,
@@ -102,8 +102,8 @@ async def audio_worker(
                 parse_mode=settings.parse_mode
             )
             return START
-    except TooManyRetries:
-        logger.error(Messages.RETRY_ERROR_FULL.value)
+    except CircuitOpenException:
+        logger.error(Messages.CIRCUIT_BREAKER_OPEN.value)
     if os.access(audio_path, os.R_OK):
         os.remove(audio_path)
         logger.info(Messages.AUDIO_DELETE.value, audio_path)

@@ -10,9 +10,8 @@ from pydantic import ValidationError
 from src.config import configure_logging, settings
 from src.constants import APP_NAME, Messanges
 from src.schemas import LoadData
-from src.utils import (error_handling, get_openai_client,
-                       raw_sent_message_to_telegram, retry_requests,
-                       TooManyRetries)
+from src.utils import (CircuitOpenException, error_handling, get_openai_client,
+                       raw_sent_message_to_telegram)
 
 logger = logging.getLogger(APP_NAME)
 
@@ -59,7 +58,7 @@ class Worker:
                     #     Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
                     # )
                     await raw_sent_message_to_telegram(data.telegram_id, message)
-                except TooManyRetries:
+                except CircuitOpenException:
                     logger.error(
                         Messanges.MESSAGE_DONT_SEND.value, data.telegram_id,
                         message[:settings.logging_message_slice]

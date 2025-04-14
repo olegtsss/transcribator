@@ -1,6 +1,8 @@
 import asyncio
 import functools
 import logging
+from datetime import datetime, timedelta
+from functools import lru_cache
 from http import HTTPStatus
 from typing import Any, Callable
 
@@ -20,6 +22,10 @@ class FastApiResponseError(Exception):
 
 
 class TooManyRetries(Exception):
+    pass
+
+
+class CircuitOpenException(Exception):
     pass
 
 
@@ -94,12 +100,75 @@ async def request_to_produse_service(path: str, data: dict) -> str:
 
 
 async def retry_requests(
-    coro: Callable, max_retries: int = 5, timeout: int = 5, retry_interval: int = 1
+    coro: Callable, max_retries: int = 5, retry_interval: int = 1
 ) -> str:
     for retry_num in range(max_retries):
         try:
-            return await asyncio.wait_for(coro(), timeout=timeout)
-        except (TimeoutError, HTTPException, ClientConnectorError, FastApiResponseError) as error:
+            # timeout обрабатывается в CircuitBreaker
+            # return await asyncio.wait_for(coro(), timeout=timeout)
+            return await coro()
+        except (HTTPException, ClientConnectorError, FastApiResponseError) as error:
             logger.error(Messages.RETRY_ERROR.value, retry_num, error)
         await asyncio.sleep(retry_interval)
     raise TooManyRetries
+
+
+class CircuitBreaker:
+
+    def __init__(
+        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 2,
+        reset_interval: int = 60
+    ) -> None:
+        self.callback = callback
+        self.timeout = timeout
+        self.time_window = time_window
+        self.max_failures = max_failures
+        self.reset_interval = reset_interval
+        self. last_request_time = None
+        self.last_failure_time = None
+        self.current_failures = 0
+
+    async def request(self, *args, **kwargs):
+        if self.current_failures >= self.max_failures:
+            if (
+                datetime.now() >
+                self.last_failure_time + timedelta(seconds=self.reset_interval)
+            ):
+                self._reset()
+                return await self._do_request(*args, **kwargs)
+            else:
+                raise CircuitOpenException
+        else:
+            if (
+                self.last_failure_time and
+                datetime.now() >
+                self.last_failure_time + timedelta(seconds=self.time_window)
+            ):
+                self._reset()
+            logger.info(Messages.CIRCUIT_BREAKER_CLOSE.value)
+            return await self._do_request(*args, **kwargs)
+
+    def _reset(self):
+        logger.info(Messages.CIRCUIT_BREAKER_RESET.value)
+        self.last_failure_time = None
+        self.current_failures = 0
+
+    async def _do_request(self, *args, **kwargs):
+        try:
+            self.last_request_time = datetime.now()
+            return await asyncio.wait_for(self.callback(*args, **kwargs), timeout=self.timeout)
+        except TimeoutError:
+            logger.info(Messages.CIRCUIT_BREAKER_CATCH_TIMEOUT.value)
+        except TooManyRetries:
+            logger.error(Messages.RETRY_ERROR_FULL.value)
+        self.current_failures += 1
+        if self.last_failure_time is None:
+            self.last_failure_time = datetime.now()
+
+
+@lru_cache
+def get_producer_service() -> CircuitBreaker:
+    return CircuitBreaker(retry_requests)
+
+
+producer_service = get_producer_service()

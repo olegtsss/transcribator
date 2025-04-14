@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings
 
 load_dotenv(dotenv_path='.env')
 
+
 class Settings(BaseSettings):
     app_title: str = os.getenv('APP_TITLE', 'Bot')
 
