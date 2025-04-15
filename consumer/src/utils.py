@@ -40,7 +40,7 @@ class CircuitBreaker:
         self.time_window = time_window
         self.max_failures = max_failures
         self.reset_interval = reset_interval
-        self. last_request_time = None
+        self.last_request_time = None
         self.last_failure_time = None
         self.current_failures = 0
 
@@ -113,7 +113,7 @@ async def http_post(
 ) -> str:
     async with session.post(
         settings.bot_url, headers=settings.http_headers,
-        json={chat_id_post: telegram_id, text_post: message}
+        json={chat_id_post: telegram_id, text_post: message}, timeout=None
     ) as response:
         if response.status not in (HTTPStatus.OK,):
             logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)

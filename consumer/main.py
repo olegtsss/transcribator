@@ -61,11 +61,14 @@ class Worker:
         backoff.expo, ConnectionError, max_time=settings.backoff_max_time,
         max_tries=settings.backoff_max_tries
     )
-    async def consume(self) -> None:
+    async def consume(self, count: int = 1) -> None:
         connection = await aio_pika.connect_robust(settings.rabbit_dsn)
         try:
             channel = await connection.channel()
-            instant_queue = await channel.declare_queue(settings.transcribe_queue, durable=True)
+            await channel.set_qos(prefetch_count=count)
+            instant_queue = await channel.declare_queue(
+                settings.transcribe_queue, durable=True, auto_delete=True
+            )
             while True:
                 await instant_queue.consume(callback=self.process_message)
                 await sleep(settings.consume_timeout)

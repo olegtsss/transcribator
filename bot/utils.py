@@ -91,7 +91,7 @@ async def request_to_produse_service(path: str, data: dict) -> str:
                 f'http://{settings.producer_host}:{settings.producer_port}/'
                 f'{Routes.PRODUCE_TASK.value}',
             ),
-            json=data
+            json=data, timeout=None
         ) as response:
             if response.status not in (HTTPStatus.CREATED,):
                 logger.error(Messages.TASK_REQUEST_ERROR.value, response.status)
@@ -124,7 +124,7 @@ class CircuitBreaker:
         self.time_window = time_window
         self.max_failures = max_failures
         self.reset_interval = reset_interval
-        self. last_request_time = None
+        self.last_request_time = None
         self.last_failure_time = None
         self.current_failures = 0
 
