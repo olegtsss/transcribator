@@ -21,6 +21,7 @@ class Settings(BaseSettings):
 
     producer_host: str = os.getenv('PROXY_HOST', '127.0.0.1')
     producer_port: int = int(os.getenv('PROXY_PRODUCER_PORT', '8001'))
+    producer_url: str = f'http://{producer_host}:{producer_port}/'
 
     telegram_bot_token: str = os.getenv('TELEGRAM_BOT_TOKEN', None)
     users: tuple = tuple(
