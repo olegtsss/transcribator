@@ -84,7 +84,6 @@ async def audio_worker(
         produser_task_id: str = await producer_service.request(
             functools.partial(
                 request_to_produse_service,
-                audio_path,
                 LoadData(telegram_id=update.effective_chat.id, audio_path=audio_path).dict()
             )
         )
