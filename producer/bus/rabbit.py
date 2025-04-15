@@ -20,7 +20,8 @@ class Bus:
     async def prepair_channel(self) -> None:
         self.channel = await self.connection.channel()
         await self.channel.declare_exchange(
-            settings.transcribe_exchange, aio_pika.ExchangeType.DIRECT, auto_delete=True
+            settings.transcribe_exchange, aio_pika.ExchangeType.DIRECT, auto_delete=True,
+            durable=False
         )
 
     async def close_connection(self) -> None:
