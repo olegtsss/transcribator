@@ -118,6 +118,7 @@ async def http_post(
         if response.status not in (HTTPStatus.OK,):
             logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)
             raise HttpResponseError
+        logger.info(Messanges.MESSAGE_SUCCESS.value, len(message))
         return await response.text()
 
 
@@ -144,15 +145,9 @@ async def raw_sent_message_to_telegram(telegram_id: int, messages: list) -> None
             if len(messages) > 1:
                 await asyncio.sleep(settings.telegram_delay_for_message)
             try:
-                id_task = await telegram_service.request(
+                await telegram_service.request(
                     functools.partial(http_post, session, telegram_id, message)
                 )
-                if id_task:
-                    logger.info(Messanges.MESSAGE_SUCCESS.value, id_task)
-                else:
-                    logger.error(
-                        Messanges.MESSAGE_ERROR.value, messages[:settings.logging_message_slice]
-                    )
             except CircuitOpenException:
                 logger.error(
                     Messanges.MESSAGE_DONT_SEND.value, telegram_id,
