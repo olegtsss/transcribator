@@ -32,7 +32,7 @@ class CircuitOpenException(Exception):
 class CircuitBreaker:
 
     def __init__(
-        self, callback, timeout: int = 10, time_window: float = 5.0, max_failures: int = 5,
+        self, callback, timeout: int = 30, time_window: float = 5.0, max_failures: int = 5,
         reset_interval: int = 60
     ) -> None:
         self.callback = callback
