@@ -52,9 +52,6 @@ class Worker:
                 text[i:i+settings.telegram_max_symbols_in_message]
                 for i in range(0, len(text), settings.telegram_max_symbols_in_message)
             ]
-            # logger.info(
-            #     Messanges.MESSAGE_DONE.value, message[:settings.logging_message_slice]
-            # )
             await raw_sent_message_to_telegram(data.telegram_id, messages)
         os.remove(data.audio_path)
         logger.info(Messanges.AUDIO_DELETE.value, data.audio_path)
