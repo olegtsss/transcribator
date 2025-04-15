@@ -118,7 +118,7 @@ async def http_post(
         if response.status not in (HTTPStatus.OK,):
             logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)
             raise HttpResponseError
-        logger.info(Messanges.MESSAGE_SUCCESS.value, len(message))
+        logger.info(Messanges.MESSAGE_SUCCESS.value, len(message) - settings.uuid_length)
         return await response.text()
 
 
