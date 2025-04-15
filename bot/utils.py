@@ -84,7 +84,7 @@ def chech_user_permition():
     return wrapper
 
 
-async def request_to_produse_service(path: str, data: dict) -> str:
+async def request_to_produse_service(data: dict) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.post(
             (
