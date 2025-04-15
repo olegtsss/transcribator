@@ -61,7 +61,7 @@ class CircuitBreaker:
                 self.last_failure_time + timedelta(seconds=self.time_window)
             ):
                 self._reset()
-            logger.info(Messanges.CIRCUIT_BREAKER_CLOSE.value)
+            logger.debug(Messanges.CIRCUIT_BREAKER_CLOSE.value)
             return await self._do_request(*args, **kwargs)
 
     def _reset(self):
@@ -74,7 +74,7 @@ class CircuitBreaker:
             self.last_request_time = datetime.now()
             return await asyncio.wait_for(self.callback(*args, **kwargs), timeout=self.timeout)
         except TimeoutError:
-            logger.info(Messanges.CIRCUIT_BREAKER_CATCH_TIMEOUT.value)
+            logger.error(Messanges.CIRCUIT_BREAKER_CATCH_TIMEOUT.value)
         except TooManyRetries:
             logger.error(Messanges.RETRY_ERROR_FULL.value)
         self.current_failures += 1
@@ -111,7 +111,6 @@ async def http_post(
     session, telegram_id: int, message: str,
     chat_id_post: str = 'chat_id', text_post: str = 'text'
 ) -> str:
-    logger.info('Попытка http post %s',  message[:50])
     async with session.post(
         settings.bot_url, headers=settings.http_headers,
         json={chat_id_post: telegram_id, text_post: message}

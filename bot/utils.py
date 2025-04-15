@@ -141,7 +141,7 @@ class CircuitBreaker:
                 self.last_failure_time + timedelta(seconds=self.time_window)
             ):
                 self._reset()
-            logger.info(Messages.CIRCUIT_BREAKER_CLOSE.value)
+            logger.debug(Messages.CIRCUIT_BREAKER_CLOSE.value)
             return await self._do_request(*args, **kwargs)
 
     def _reset(self):
@@ -154,7 +154,7 @@ class CircuitBreaker:
             self.last_request_time = datetime.now()
             return await asyncio.wait_for(self.callback(*args, **kwargs), timeout=self.timeout)
         except TimeoutError:
-            logger.info(Messages.CIRCUIT_BREAKER_CATCH_TIMEOUT.value)
+            logger.error(Messages.CIRCUIT_BREAKER_CATCH_TIMEOUT.value)
         except TooManyRetries:
             logger.error(Messages.RETRY_ERROR_FULL.value)
         self.current_failures += 1
