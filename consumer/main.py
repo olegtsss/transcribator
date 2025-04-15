@@ -66,9 +66,7 @@ class Worker:
         try:
             channel = await connection.channel()
             await channel.set_qos(prefetch_count=count)
-            instant_queue = await channel.declare_queue(
-                settings.transcribe_queue, durable=True, auto_delete=True
-            )
+            instant_queue = await channel.declare_queue(settings.transcribe_queue, durable=True)
             while True:
                 await instant_queue.consume(callback=self.process_message)
                 await sleep(settings.consume_timeout)
