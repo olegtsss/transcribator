@@ -68,7 +68,7 @@ class Worker:
             channel = await connection.channel()
             await channel.set_qos(prefetch_count=count)
             instant_queue = await channel.declare_queue(
-                settings.transcribe_queue, durable=True, auto_delete=True
+                settings.transcribe_queue, aio_pika.ExchangeType.DIRECT, auto_delete=True
             )
             while True:
                 async with self.lock:
