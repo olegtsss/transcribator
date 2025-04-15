@@ -111,9 +111,10 @@ async def http_post(
     session, telegram_id: int, message: str,
     chat_id_post: str = 'chat_id', text_post: str = 'text'
 ) -> str:
+    logger.info('Попытка http post %s',  message[:50])
     async with session.post(
         settings.bot_url, headers=settings.http_headers,
-        json={chat_id_post: telegram_id, text_post: message}, timeout=None
+        json={chat_id_post: telegram_id, text_post: message}
     ) as response:
         if response.status not in (HTTPStatus.OK,):
             logger.error(Messanges.ERROR_FROM_EXTERNAL_API.value, response.status)
