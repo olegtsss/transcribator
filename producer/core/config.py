@@ -26,7 +26,7 @@ class Settings(BaseSettings):
         f"{os.getenv('RABBITMQ_DEFAULT_PORT', '5672')}/"
     )
     transcribe_exchange: str = 'produce_exchange'
-    transcribe_queue: str = 'task_for_tarnscribe'
+    transcribe_queue: str = 'tasks'
 
     timeout_for_requests: int = 10
     backoff_max_time: int = 30
