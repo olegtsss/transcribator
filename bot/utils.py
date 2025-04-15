@@ -87,7 +87,7 @@ def chech_user_permition():
 async def request_to_produse_service(data: dict) -> str:
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f'settings.producer_url/{Routes.PRODUCE_TASK.value}', json=data
+            f'{settings.producer_url}/{Routes.PRODUCE_TASK.value}', json=data
         ) as response:
             if response.status not in (HTTPStatus.CREATED,):
                 logger.error(Messages.TASK_REQUEST_ERROR.value, response.status)
