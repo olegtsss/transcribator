@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 from http import HTTPStatus
 from typing import Callable
-
+from langdetect import detect
 import aiohttp
 import backoff
 from aiohttp.client_exceptions import ClientConnectorError
@@ -13,6 +13,7 @@ from aiohttp.web import HTTPException
 from openai import OpenAI
 from src.config import settings
 from src.constants import APP_NAME, Messanges
+from googletrans import Translator
 
 logger = logging.getLogger(APP_NAME)
 
@@ -153,3 +154,11 @@ async def raw_sent_message_to_telegram(telegram_id: int, messages: list) -> None
                     Messanges.MESSAGE_DONT_SEND.value, telegram_id,
                     message[:settings.logging_message_slice]
                 )
+
+
+async def translate(translator: Translator, text: str, dest: str = 'ru') -> str:
+    language = detect(text)
+    if language == dest:
+        return text
+    result = await translator.translate(text, dest=dest)
+    return result.text

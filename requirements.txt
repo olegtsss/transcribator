@@ -12,3 +12,5 @@ pydantic_settings
 greenlet
 aiohttp
 backoff
+googletrans
+langdetect

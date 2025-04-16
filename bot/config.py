@@ -40,6 +40,9 @@ class Settings(BaseSettings):
         temp_dir: Path = Path(__file__).parent.parent / 'temp'
         temp_dir.mkdir(exist_ok=True)
 
+    translate: str = os.getenv('TRANSLATE', 'True')
+    need_translate: bool = bool(translate == 'True' or translate == 'TRUE')
+
 
 settings = Settings()
 

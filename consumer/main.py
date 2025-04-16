@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from asyncio import Lock, sleep
-
+from googletrans import Translator
 import aio_pika
 import backoff
 from openai import OpenAI
@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from src.config import configure_logging, settings
 from src.constants import APP_NAME, Messanges
 from src.schemas import LoadData
-from src.utils import (error_handling, get_openai_client,
+from src.utils import (error_handling, get_openai_client, translate,
                        raw_sent_message_to_telegram)
 
 logger = logging.getLogger(APP_NAME)
@@ -18,9 +18,10 @@ logger = logging.getLogger(APP_NAME)
 
 class Worker:
 
-    def __init__(self, openai_client: OpenAI, lock: Lock) -> None:
+    def __init__(self, openai_client: OpenAI, lock: Lock, translator: Translator) -> None:
         self.openai_client = openai_client
         self.lock = lock
+        self.translator = translator
 
     @error_handling
     async def process_message(self, message: aio_pika.abc.AbstractIncomingMessage) -> None:
@@ -43,7 +44,8 @@ class Worker:
                     Messanges.TRANSCRIPT_SUCCESS.value, data.audio_path, len(transcript.text)
                 )
                 text = Messanges.ANSWER.value.format(
-                    entity_id=f'{data.entity_id}'.split('-')[-1], text=transcript.text
+                    entity_id=f'{data.entity_id}'.split('-')[-1],
+                    text=await translate(self.translator, transcript.text) if data.translate else transcript.text
                 )
             else:
                 text = Messanges.EMPTY_TRANSCRIBE.value
@@ -80,7 +82,8 @@ async def main() -> None:
     logging.info(Messanges.BACKEND_START.value)
     lock = Lock()
     openai_client = get_openai_client()
-    worker = Worker(openai_client, lock)
+    translator = Translator()
+    worker = Worker(openai_client, lock, translator)
     await worker.consume()
 
 
