@@ -23,3 +23,4 @@ class Descriptions(str, Enum):
     PATH = 'Путь до файла'
     UUID = 'ID задания'
     CREATED = 'Дата создания задания'
+    TRANSLATE = 'Необходимость перевода'
