@@ -21,3 +21,5 @@ class Messanges(str, Enum):
     CIRCUIT_BREAKER_CLOSE = 'Прерыватель замкнут, отправляю запрос!'
     CIRCUIT_BREAKER_OPEN = 'Прерыватель разомкнут, быстрый отказ!'
     CIRCUIT_BREAKER_CATCH_TIMEOUT = 'Прерыватель перехватил таймаут'
+
+    TRANSLATE_INFO = 'Текст сообщения определен как %s'
