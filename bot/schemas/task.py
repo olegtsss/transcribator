@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from typing import Optional
-from core.config import settings
+
+from config import settings
+from pydantic import BaseModel
 
 
 class LoadData(BaseModel):

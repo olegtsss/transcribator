@@ -2,16 +2,17 @@ import asyncio
 import logging
 import os
 from asyncio import Lock, sleep
-from googletrans import Translator
+
 import aio_pika
 import backoff
+from googletrans import Translator
 from openai import OpenAI
 from pydantic import ValidationError
 from src.config import configure_logging, settings
 from src.constants import APP_NAME, Messanges
 from src.schemas import LoadData
-from src.utils import (error_handling, get_openai_client, translate,
-                       raw_sent_message_to_telegram)
+from src.utils import (error_handling, get_openai_client,
+                       raw_sent_message_to_telegram, translate)
 
 logger = logging.getLogger(APP_NAME)
 

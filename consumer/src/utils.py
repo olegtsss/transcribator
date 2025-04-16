@@ -5,15 +5,16 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 from http import HTTPStatus
 from typing import Callable
-from langdetect import detect
+
 import aiohttp
 import backoff
 from aiohttp.client_exceptions import ClientConnectorError
 from aiohttp.web import HTTPException
+from googletrans import Translator
+from langdetect import detect
 from openai import OpenAI
 from src.config import settings
 from src.constants import APP_NAME, Messanges
-from googletrans import Translator
 
 logger = logging.getLogger(APP_NAME)
 
