@@ -5,4 +5,4 @@ from typing import Optional
 class LoadData(BaseModel):
     telegram_id: int
     audio_path: str
-    translate: Optional[bool]
+    translate: Optional[bool] = True
