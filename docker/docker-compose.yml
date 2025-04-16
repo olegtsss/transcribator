@@ -107,7 +107,7 @@ services:
       dockerfile: Dockerfile_consumer
     restart: always
     depends_on:
-      - transcribator_whisper
+      - transcribator_rabbit
     env_file:
       - ../.env
     volumes:
