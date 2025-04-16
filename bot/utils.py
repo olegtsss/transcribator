@@ -86,6 +86,7 @@ def chech_user_permition():
 
 async def request_to_produse_service(data: dict) -> str:
     async with aiohttp.ClientSession() as session:
+        logger.info(f'{settings.producer_url}/{Routes.PRODUCE_TASK.value}')
         async with session.post(
             f'{settings.producer_url}/{Routes.PRODUCE_TASK.value}', json=data
         ) as response:

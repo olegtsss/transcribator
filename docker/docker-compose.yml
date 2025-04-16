@@ -8,11 +8,10 @@ services:
     networks:
       app_net_3:
         ipv4_address: 10.0.2.2
-    ports:
-      - "192.168.16.65:8000:8000"
+    # ports:
+    #   - "192.168.16.65:8000:8000"
     volumes:
       - cache_transcribator:/root/.cache/huggingface
-      - temp_transcribator:/media/
     healthcheck:
       test: curl -f http://10.0.2.2:8000/health || exit 1
       interval: 60s
@@ -63,8 +62,8 @@ services:
     container_name: transcribator_rabbit
     depends_on:
       - transcribator_whisper
-    ports:
-      - 192.168.16.65:5672:5672
+    # ports:
+    #   - 192.168.16.65:5672:5672
       # - 192.168.16.65:15672:15672  web интерфейс
     env_file: ../.env
     networks:
