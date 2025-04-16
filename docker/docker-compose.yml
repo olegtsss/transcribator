@@ -21,7 +21,7 @@ services:
       start_period: 30s
 
   transcribator_nginx:
-    container_name: transcribator_whisper
+    container_name: transcribator_nginx
     image: nginx:1.21.3-alpine
     depends_on:
       - transcribator_producer

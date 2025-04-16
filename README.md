@@ -5,7 +5,6 @@
 
 Python 3.12, Fastapi, Python-telegram-bot, Docker, OpenAI, RabbitMQ.
 
-
 ### Как запустить проект:
 
 ```
@@ -32,7 +31,6 @@ cd transcribator/docker/
 docker build -f Dockerfile_base -t transcribator_base_image .
 docker-compose up -d --build
 ```
-
 
 ### Как обновить проект в Docker:
 
