@@ -14,7 +14,7 @@ services:
       - cache_transcribator:/root/.cache/huggingface
     healthcheck:
       test: curl -f http://10.0.2.2:8000/health || exit 1
-      interval: 60s
+      interval: 180s
       timeout: 3s
       retries: 3
       start_period: 30s
@@ -35,7 +35,7 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
     healthcheck:
       test: service nginx status || exit 1
-      interval: 70s
+      interval: 190s
       timeout: 3s
       retries: 3
       start_period: 30s
@@ -74,7 +74,7 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "rabbitmqctl", "ping"]
-      interval: 30s
+      interval: 200s
       timeout: 10s
       retries: 3
   
@@ -95,7 +95,7 @@ services:
         ipv4_address: 10.0.2.6
     healthcheck:
       test: curl -f http://10.0.2.6:8001/api/v1/healthcheck/200 || exit 1
-      interval: 60s
+      interval: 210s
       timeout: 3s
       retries: 3
       start_period: 30s
