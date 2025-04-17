@@ -37,18 +37,27 @@ async def mode_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     mode = update.message.text
     if not mode:
         return await print_buttons(update, context)
-    await update.message.reply_text(
-        Messages.START_TRANSCRIBE.value,
-        reply_markup=ReplyKeyboardMarkup(
-            [[Buttons.STOP.value]],
-            one_time_keyboard=True, resize_keyboard=True,
-            input_field_placeholder=Buttons.PLACE_HOLDER.value
-        ),
-        parse_mode=settings.parse_mode
-    )
     if mode == Buttons.TRANSCRIBE.value:
+        await update.message.reply_text(
+            Messages.START_TRANSCRIBE.value,
+            reply_markup=ReplyKeyboardMarkup(
+                [[Buttons.STOP.value]],
+                one_time_keyboard=True, resize_keyboard=True,
+                input_field_placeholder=Buttons.PLACE_HOLDER.value
+            ),
+            parse_mode=settings.parse_mode
+        )
         return TRANSCRIBE
     elif mode == Buttons.TRANSLATE.value:
+        await update.message.reply_text(
+            Messages.START_TRANSCRIBE.value,
+            reply_markup=ReplyKeyboardMarkup(
+                [[Buttons.STOP.value]],
+                one_time_keyboard=True, resize_keyboard=True,
+                input_field_placeholder=Buttons.PLACE_HOLDER.value
+            ),
+            parse_mode=settings.parse_mode
+        )
         return TRANSLATE
     return await print_buttons(update, context)
 
