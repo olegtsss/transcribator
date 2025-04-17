@@ -158,10 +158,17 @@ async def raw_sent_message_to_telegram(telegram_id: int, messages: list) -> None
 
 
 async def translate(translator: Translator, text: str, dest: str = 'ru') -> str:
-    language = detect(text)
-    if language == dest:
-        logger.debug(Messanges.TRANSLATE_INFO.value, dest)
-        return text
-    logger.info(Messanges.TRANSLATE_INFO.value, language)
-    result = await translator.translate(text, dest=dest)
-    return result.text
+    try:
+        language = detect(text)
+        if language == dest:
+            logger.debug(Messanges.TRANSLATE_INFO.value, dest)
+            return text
+        logger.info(Messanges.TRANSLATE_INFO.value, language)
+        result = await translator.translate(text, dest=dest)
+        if not result.text:
+            logger.error(Messanges.TRANSLATE_ERROR_EMPTY.value, result)
+            return text
+        return result.text
+    except Exception as error:
+        logger.error(Messanges.TRANSLATE_ERROR.value, error)
+    return text

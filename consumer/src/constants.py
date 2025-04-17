@@ -23,3 +23,5 @@ class Messanges(str, Enum):
     CIRCUIT_BREAKER_CATCH_TIMEOUT = 'Прерыватель перехватил таймаут'
 
     TRANSLATE_INFO = 'Текст сообщения определен как: %s'
+    TRANSLATE_ERROR = 'При попытке перевода произошла ошибка: %s'
+    TRANSLATE_ERROR_EMPTY = 'При попытке перевода не получен текст: %s'
