@@ -80,7 +80,7 @@ class Worker:
 
 async def main() -> None:
     configure_logging()
-    logging.info(Messanges.BACKEND_START.value)
+    logger.info(Messanges.BACKEND_START.value)
     lock = Lock()
     openai_client = get_openai_client()
     translator = Translator()

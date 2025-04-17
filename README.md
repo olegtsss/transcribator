@@ -81,6 +81,18 @@ docker logs --follow transcribator_producer
 docker logs --follow transcribator_consumer
 ```
 
+### Функциональное тестирование:
+
+```
+# docker/docker-compose.yml
+-> transcribator_producer:
+    ...
+    ports:
+      - 192.168.16.65:8001:8001
+
+pytest
+```
+
 ### Разработчик:
 [olegtsss](https://github.com/olegtsss)
 [etalab-ia](https://github.com/etalab-ia/faster-whisper-server)
