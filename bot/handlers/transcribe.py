@@ -14,7 +14,7 @@ from utils import (cancel, chech_user_permition, CircuitOpenException,
 logger = logging.getLogger(settings.app_title)
 
 
-START, TRANSCRIBE, TRANSLATE, WORK = range(4)
+START, TRANSCRIBE, TRANSLATE = range(3)
 
 
 @chech_user_permition()
@@ -36,16 +36,7 @@ async def print_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 async def mode_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     mode = update.message.text
     if not mode:
-        await update.message.reply_text(
-            Messages.MODE_SELECT.value,
-            reply_markup=ReplyKeyboardMarkup(
-                [[Buttons.TRANSCRIBE.value], [Buttons.TRANSLATE.value]],
-                one_time_keyboard=True, resize_keyboard=True,
-                input_field_placeholder=Buttons.PLACE_HOLDER_MODE.value
-            ),
-            parse_mode=settings.parse_mode
-        )
-        return START
+        return await print_buttons(update, context)
     await update.message.reply_text(
         Messages.START_TRANSCRIBE.value,
         reply_markup=ReplyKeyboardMarkup(
@@ -59,16 +50,7 @@ async def mode_worker(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
         return TRANSCRIBE
     elif mode == Buttons.TRANSLATE.value:
         return TRANSLATE
-    await update.message.reply_text(
-        Messages.START_TRANSCRIBE.value,
-        reply_markup=ReplyKeyboardMarkup(
-            [[Buttons.TRANSCRIBE.value], [Buttons.TRANSLATE.value]],
-            one_time_keyboard=True, resize_keyboard=True,
-            input_field_placeholder=Buttons.PLACE_HOLDER_MODE.value
-        ),
-        parse_mode=settings.parse_mode
-    )
-    return START
+    return await print_buttons(update, context)
 
 
 @chech_user_permition()
@@ -183,11 +165,7 @@ async def audio_worker(
 main_handler = ConversationHandler(
     entry_points=[CommandHandler(Commands.TRANSCRIBE.value, print_buttons)],
     states={
-        START: [
-            MessageHandler(
-                filters.TEXT & ~(filters.COMMAND), mode_worker
-            )
-        ],
+        START: [MessageHandler(filters.TEXT & ~(filters.COMMAND), mode_worker)],
         TRANSCRIBE: [
             MessageHandler(
                 (
