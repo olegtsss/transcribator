@@ -1,23 +1,16 @@
+import aio_pika
 import pytest_asyncio
 
 from tests.functional.settings import test_settings
-from tests.functional.utils import (generate_digits, generate_name,
-                                    generate_username)
 
 
-# @pytest_asyncio.fixture(name='rabbit_conn')
-# async def sqlite_conn_1():
-#     sqlite_conn = await aiosqlite.connect(test_settings.database_1_name)
-#     yield sqlite_conn
-#     await sqlite_conn.close()
-
-
-
-# @pytest_asyncio.fixture(name='create_table_yandex')
-# def create_table_yandex(sqlite_conn_1: Connection):
-#     async def inner():
-#         fake = Faker()
-#         await sqlite_conn_1.execute('DROP TABLE IF EXISTS yandex_eda;')
-#         await sqlite_conn_1.commit()
-
-#     return inner
+@pytest_asyncio.fixture(name='get_queue')
+async def get_queue():
+    connection = await aio_pika.connect_robust(test_settings.rabbit_dsn)
+    channel = await connection.channel()
+    await channel.set_qos(prefetch_count=1)
+    instant_queue = await channel.declare_queue(
+        test_settings.transcribe_queue, durable=False, auto_delete=True
+    )
+    yield instant_queue
+    await connection.close()

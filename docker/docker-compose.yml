@@ -63,7 +63,7 @@ services:
     depends_on:
       - transcribator_whisper
     # ports:
-    #   - 192.168.16.65:5672:5672
+    #   - 192.168.16.65:5672:5672  для тестов
       # - 192.168.16.65:15672:15672  web интерфейс
     env_file: ../.env
     networks:
