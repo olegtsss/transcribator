@@ -9,7 +9,7 @@ services:
       app_net_3:
         ipv4_address: 10.0.2.2
     # ports:
-    #   - "192.168.16.65:8000:8000"
+    #   - "127.0.0.1:8000:8000"
     volumes:
       - cache_transcribator:/root/.cache/huggingface
     healthcheck:
@@ -63,8 +63,8 @@ services:
     depends_on:
       - transcribator_whisper
     # ports:
-    #   - 192.168.16.65:5672:5672  для тестов
-      # - 192.168.16.65:15672:15672  web интерфейс
+    #   - 127.0.0.1:5672:5672
+      # - 127.0.0.1:15672:15672  web интерфейс
     env_file: ../.env
     networks:
       app_net_3:
@@ -87,7 +87,7 @@ services:
     depends_on:
       - transcribator_rabbit
     # ports:
-    #   - 192.168.16.65:8001:8001  для тестов
+    #   - 127.0.0.1:8001:8001
     env_file:
       - ../.env
     volumes:

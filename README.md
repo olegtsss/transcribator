@@ -88,13 +88,29 @@ docker logs --follow transcribator_consumer
 -> transcribator_producer:
     ...
     ports:
-      - 192.168.16.65:8001:8001
+      - 127.0.0.1:8001:8001
 
 -> transcribator_rabbit:
     ...
     ports:
-      - 192.168.16.65:5672:5672
+      - 127.0.0.1:5672:5672
 
+-> transcribator_consumer:
+  #   container_name: transcribator_consumer
+  #   build:
+  #     context: ../consumer/
+  #     dockerfile: Dockerfile_consumer
+  #   restart: always
+  #   depends_on:
+  #     - transcribator_rabbit
+  #   env_file:
+  #     - ../.env
+  #   volumes:
+  #     - logs_transcribator:/app/logs
+  #     - temp_transcribator:/app/temp
+  #   networks:
+  #     app_net_3:
+  #       ipv4_address: 10.0.2.7
 
 pytest
 ```
